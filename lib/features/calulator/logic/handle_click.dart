@@ -1,90 +1,102 @@
 import 'package:calculator/app/app_constants.dart';
+import 'package:calculator/services/firebase_persistence_service.dart';
 import 'package:flutter/material.dart';
-
 import 'operations.dart';
 
 class HandleClicks with ChangeNotifier {
-  double _numberA = 0;
-  double _numberB = 0;
   String _history = '';
-  String _textToDisplay = '';
-  late String _result;
-  late String _operation;
+  String _textToDisplay = '0';
+
+  final _operations = [
+    KeyStrings.mod,
+    KeyStrings.divide,
+    KeyStrings.multiply,
+    KeyStrings.subtract,
+    KeyStrings.add,
+  ];
+
+  late String _operation = '';
+  num _num1 = 0;
+  num _num2 = 0;
+  final firebasePersistence = FirebasePersistenceService();
 
   String get history => _history;
   String get textToDisplay => _textToDisplay;
 
   btnOnClick(String keyValue) {
-    switch (keyValue) {
-      case KeyStrings.clear:
-        clear();
-        break;
-      case KeyStrings.clearAll:
-        clear();
-        _history = '';
-        break;
-      case KeyStrings.delete:
-        _result = Operations.del(_result);
-        break;
-      case KeyStrings.add:
-        mathKey(keyValue);
-        break;
-      case KeyStrings.multiply:
-        mathKey(keyValue);
-        break;
-      case KeyStrings.divide:
-        mathKey(keyValue);
-        break;
-      // case KeyStrings.negate:
-      //   _numberA = _numberA * -1;
-      //   break;
-      case KeyStrings.subtract:
-        mathKey(keyValue);
-        break;
-      case KeyStrings.equals:
-        performOperation();
-        break;
-      default:
-        _result = _textToDisplay + keyValue;
+    if (keyValue == KeyStrings.allClear) {
+      _allClear();
+    } else if (keyValue == KeyStrings.delete) {
+      _deleteDigit();
+    } else if (_operations.contains(keyValue)) {
+      _setOperation(keyValue);
+    } else if (keyValue == KeyStrings.equals) {
+      _showResult();
+    } else {
+      _concatenateDigit(keyValue);
     }
 
-    _textToDisplay = _result;
     notifyListeners();
   }
 
-  void performOperation() {
-    _numberB = double.parse(_textToDisplay);
+  _allClear() {
+    _textToDisplay = '0';
+    _history = '';
+  }
+
+  _setOperation(String operation) {
+    _num1 = num.parse(_textToDisplay);
+    _operation = operation;
+    _history = _textToDisplay + ' ' + _operation;
+    _textToDisplay = '';
+  }
+
+  _showResult() {
+    _num2 = num.parse(_textToDisplay);
+    _history = _history + ' ' + '$_num2';
 
     if (_operation == KeyStrings.add) {
-      _result = Operations.add(_numberA, _numberB).toString();
+      _textToDisplay = Operations.add(_num1, _num2).toString();
     }
 
     if (_operation == KeyStrings.multiply) {
-      _result = Operations.multiply(_numberA, _numberB).toString();
+      _textToDisplay = Operations.multiply(_num1, _num2).toString();
     }
 
     if (_operation == KeyStrings.subtract) {
-      _result = Operations.subtract(_numberA, _numberB).toString();
+      _textToDisplay = Operations.subtract(_num1, _num2).toString();
     }
 
     if (_operation == KeyStrings.divide) {
-      _result = Operations.divide(_numberA, _numberB).toString();
+      _textToDisplay = Operations.divide(_num1, _num2).toString();
     }
 
-    _history += ' $_numberB';
+    if (_operation == KeyStrings.mod) {
+      _textToDisplay = Operations.mod(_num1, _num2).toString();
+    }
+
+    final dbPesrsitence = FirebasePersistenceService();
+    dbPesrsitence.addData(_history, _textToDisplay);
   }
 
-  void mathKey(String keyValue) {
-    _numberA = double.parse(_textToDisplay);
-    _result = '';
-    _operation = keyValue;
-    _history = '$_numberA $_operation';
+  _concatenateDigit(String digit) {
+    if (digit == KeyStrings.decimal &&
+        _textToDisplay.contains(KeyStrings.decimal)) {
+      return;
+    }
+    if ((num.tryParse(_textToDisplay) ?? 1) == 0 &&
+        digit != KeyStrings.decimal) {
+      _textToDisplay = digit;
+    } else {
+      _textToDisplay = _textToDisplay + digit;
+    }
   }
 
-  void clear() {
-    _textToDisplay = '';
-    _numberA = 0;
-    _numberB = 0;
-    _result = '';
+  _deleteDigit() {
+    if (num.parse(_textToDisplay) == 0) {
+      _textToDisplay = '0';
+      return;
+    }
+    _textToDisplay = Operations.del(_textToDisplay);
   }
 }
