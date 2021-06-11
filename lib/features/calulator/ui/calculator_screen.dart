@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'components/calculator_history.dart';
+import 'package:provider/provider.dart';
+import 'components/history_list.dart';
 import 'components/display.dart';
 import 'components/key_pad.dart';
+import 'components/history_button.dart';
+import 'components/login_logout_button.dart';
+import 'components/user_email.dart';
 
 class CalculatorScreen extends StatefulWidget {
   CalculatorScreen({Key? key}) : super(key: key);
@@ -17,24 +21,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
+    final firebaseUser = context.watch<User?>();
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Calculadora 2000'),
         actions: [
-          Visibility(
-            visible: _screenWidth < 560,
-            child: IconButton(
-              onPressed: () {
-                showHistory(context);
-              },
-              icon: Icon(Icons.history),
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.login),
-          ),
+          HistoryButton(screenWidth: _screenWidth),
+          UserEmail(firebaseUser: firebaseUser),
+          LoginLogoutButton(firebaseUser: firebaseUser),
         ],
       ),
       body: SafeArea(
@@ -58,13 +53,4 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       ),
     );
   }
-}
-
-Future<dynamic> showHistory(BuildContext context) {
-  return showModalBottomSheet(
-    context: context,
-    builder: (context) {
-      return History();
-    },
-  );
 }
