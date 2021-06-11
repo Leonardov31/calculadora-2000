@@ -17,17 +17,18 @@ class Display extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.bottomRight,
               child: Text(
                 context.watch<HandleClicks>().history,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
             ),
             Align(
               alignment: Alignment.centerRight,
               child: Text(
                 context.watch<HandleClicks>().textToDisplay,
-                style: TextStyle(fontSize: 50),
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 35),
               ),
             ),
           ],
