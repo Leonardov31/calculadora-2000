@@ -56,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 20.0),
                       TextFormField(
+                        obscureText: true,
                         controller: password,
                         decoration: InputDecoration(
                           labelText: 'Senha',
