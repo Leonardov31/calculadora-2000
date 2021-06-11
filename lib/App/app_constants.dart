@@ -8,29 +8,24 @@ class AppColors {
 }
 
 class KeyStrings {
-  static const clear = 'C';
-  static const clearAll = 'AC';
-  static const percent = '%';
-  static const divide = '/';
-  static const multiply = 'X';
-  static const subtract = '-';
-  static const add = '+';
-  static const equals = '=';
-  static const decimal = '.';
-  static const delete = 'DEL';
-  static const inverse = '1/x';
-  static const powerOfTwo = 'x^2';
-  static const squareRoot = '√x';
-  static const negate = '+/-';
+  static const String allClear = 'AC';
+  static const String mod = '%';
+  static const String divide = '/';
+  static const String multiply = 'X';
+  static const String subtract = '-';
+  static const String add = '+';
+  static const String equals = '=';
+  static const String decimal = '.';
+  static const String delete = 'DEL';
 
-  static const zero = '0';
-  static const one = '1';
-  static const two = '2';
-  static const three = '3';
-  static const four = '4';
-  static const five = '5';
-  static const six = '6';
-  static const seven = '7';
-  static const eight = '8';
-  static const nine = '9';
+  static const String zero = '0';
+  static const String one = '1';
+  static const String two = '2';
+  static const String three = '3';
+  static const String four = '4';
+  static const String five = '5';
+  static const String six = '6';
+  static const String seven = '7';
+  static const String eight = '8';
+  static const String nine = '9';
 }
